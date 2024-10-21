@@ -1,0 +1,18 @@
+services:
+
+  seg_and_track:
+    build:
+      context: .
+      dockerfile: services/seg_and_track/Dockerfile
+    restart: always
+    volumes:
+      - ./common_packages:/common_packages
+    networks:
+      - assistant-network
+
+networks:
+  assistant-network:
+    driver: bridge
+
+volumes:
+  intent_catcher_data:

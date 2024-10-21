@@ -1,0 +1,7 @@
+services:
+
+  seg_and_track:
+    volumes:
+      - ./services/seg_and_track:/app
+    environment:
+      PYTHONDONTWRITEBYTECODE: 1

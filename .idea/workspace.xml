@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4bd91d55-9969-4723-81b3-5d95bf41b614" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/services/seg_and_track/tests/test_*.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common_packages/services_api/services_api/assistant.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common_packages/services_api/services_api/gigachat.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common_packages/services_api/services_api/intent_catcher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common_packages/services_api/services_api/llm_vicuna13b.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common_packages/services_api/services_api/planner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common_packages/services_api/services_api/remote.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compose.base.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/compose.base.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/assistant_api/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/assistant_api/request_cases.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/gigachat/experiments.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/compose.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/ingress/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/ingress/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/ingress/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/ingress/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/ingress/test_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/ingress/tests/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/ingress/tests/response_comparators.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/langchain_api copy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/ingress_backup/old_ingress.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/intents_dataset_by_yuriy/data/new_intents.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/intents_dataset_by_yuriy/data/results.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/snippets/regexp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/assistant_common/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/assistant_common/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/assistant_common/models/assistant_plan.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/assistant_common/models/chatsky.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/assistant_common/services/intent_catcher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/assistant_common/services/planner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/assistant_common/services/slots.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/assistant_common/utils/responses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/assistant_common/utils/world_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/packages/assistant_common/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/pipeline.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/autopilot_flow/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/autopilot_flow/conditions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/autopilot_flow/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/autopilot_flow/responses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/chit_chat_flow/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/chit_chat_flow/responses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/common/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/common/conditions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/common/responses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/direct_commands_flow/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/direct_commands_flow/conditions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/direct_commands_flow/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/direct_commands_flow/responses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/faq_flow/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/faq_flow/responses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/faq_flow/schemas.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/order_flow/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/order_flow/conditions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/order_flow/labels.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/order_flow/responses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/order_flow/schemas.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/order_flow/services.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/planner_flow/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/planner_flow/responses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/script/script.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/src/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/test_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/tests/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/tests/response_comparators.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/assistant/tests/ruff.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/gigachat/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/gigachat/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/gigachat/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/gigachat/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/gigachat/src/langchain_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/gigachat/test_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/gigachat/tests/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/dataset/direct_commands.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/dataset/flow_selection.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/dataset/ordering_intents.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/src/bge_intent_classifier.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/src/data_preparation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/src/langchain_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/src/rule_intent_classifier.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/src/vector_store.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/test_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/tests/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/intent_catcher/tests/response_comparator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/src/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/test_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/tests/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/tests/prompts.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_llama3/tests/response_comparators.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_vicuna13b/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_vicuna13b/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_vicuna13b/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_vicuna13b/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_vicuna13b/src/base_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_vicuna13b/src/langchain_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_vicuna13b/src/model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_vicuna13b/test_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/llm_vicuna13b/tests/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/config/sorter_planner.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/config/sorter_planner_in_container.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/agent_planner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/datasets/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/datasets/alfred.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/datasets/base.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/datasets/hlp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/datasets/llp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/datasets/sorter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/environment/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/environment/base.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/gen_methods/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/gen_methods/base_gen.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/gen_methods/full_gen.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/infrastructure/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/infrastructure/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/infrastructure/logger.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/models/api_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/models/base_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/processors/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/processors/base_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/processors/clean_room_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/processors/hlp_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/processors/llp_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/processors/serialization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/processors/spec_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/processors/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/processors/valid_check_processor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/self_hosted_planner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/llm_sorter/sorter_planner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/poetry.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/clean_room/clean_room.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/hlp/warehouse_hlp.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/llp/vlm_llp.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/spec/spec_prompt.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/spec/spec_prompt_with_none.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/spec/vicuna_prompt.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/valid_check/valid_check.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/valid_check/valid_check_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/valid_check/valid_check_good copy.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/valid_check/valid_check_good.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/prompts/valid_check/valid_check_unvalid.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/packages/llm_sorter/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/src/langchain_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/test_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/planner/tests/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/proxy/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/proxy/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/proxy/default.conf.template" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/services/seg_and_track/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/Dockerfile_for_compose" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/seg_and_track/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/poetry.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/services_api/assistant.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/services_api/gigachat.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/services_api/intent_catcher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/services_api/llm_vicuna13b.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/services_api/machine_translation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/services_api/planner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/services_api/remote.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/common_packages/services_api/services_api/seg_and_track.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/seg_and_track/tests/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/example.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/services/seg_and_track/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/src/segmentor.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/seg_and_track/src/segmentor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/seg_and_track/test_app.py" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/services/seg_and_track" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2n68va1GxCIwRumIJsmHsdFk3sL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "dev__service__local",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/services/seg_and_track/tests" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-PY-242.21829.153" />
+        <option value="bundled-python-sdk-464836ebc622-b74155a9e76b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.21829.153" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4bd91d55-9969-4723-81b3-5d95bf41b614" name="Changes" comment="" />
+      <created>1728282396833</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1728282396833</updated>
+      <workItem from="1728282398171" duration="5230000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

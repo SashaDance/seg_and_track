@@ -1,0 +1,84 @@
+services:
+  assistant:
+    build:
+      context: services/proxy/
+      dockerfile: Dockerfile
+    environment:
+      - PROXY_PASS=chatsky.ipavlov.mipt.ru:8000
+      - PORT=8000
+    networks:
+      - assistant-network
+
+  intent_catcher:
+    build:
+      context: services/proxy/
+      dockerfile: Dockerfile
+    environment:
+      - PROXY_PASS=chatsky.ipavlov.mipt.ru:8001
+      - PORT=8000
+    networks:
+      - assistant-network
+
+  llm_vicuna13b:
+    build:
+      context: services/proxy/
+      dockerfile: Dockerfile
+    environment:
+      - PROXY_PASS=chatsky.ipavlov.mipt.ru:8002
+      - PORT=8000
+    networks:
+      - assistant-network
+
+  planner:
+    build:
+      context: services/proxy/
+      dockerfile: Dockerfile
+    environment:
+      - PROXY_PASS=chatsky.ipavlov.mipt.ru:8003
+      - PORT=8000
+    networks:
+      - assistant-network
+
+  llm_llama3:
+    build:
+      context: services/proxy/
+      dockerfile: Dockerfile
+    environment:
+      - PROXY_PASS=chatsky.ipavlov.mipt.ru:8004
+      - PORT=8000
+    networks:
+      - assistant-network
+
+  machine_translation:
+    build:
+      context: services/proxy/
+      dockerfile: Dockerfile
+    environment:
+      - PROXY_PASS=chatsky.ipavlov.mipt.ru:8005
+      - PORT=8000
+    networks:
+      - assistant-network
+
+  gigachat:
+    build:
+      context: services/proxy/
+      dockerfile: Dockerfile
+    environment:
+      - PROXY_PASS=chatsky.ipavlov.mipt.ru:8006
+      - PORT=8000
+    networks:
+      - assistant-network
+  
+  seg_and_track:
+    build:
+      context: services/proxy/
+      dockerfile: Dockerfile
+    environment:
+      - PROXY_PASS=chatsky.ipavlov.mipt.ru:8007
+      - PORT=8000
+    networks:
+      - assistant-network
+
+networks:
+  assistant-network:
+    driver: bridge

@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "machine_translation"
+version = "0.1.0"
+description = ""
+authors = ["Denis Kuznetsov <kunetsov.den.p@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langserve = "0.2.2"
+sse-starlette = "^2.1.3"
+fastapi = {extras = ["standard"], version = "^0.112.0"}
+pytest = "^8.3.2"
+langchain = "^0.2.13"
+langchain-huggingface = "^0.0.3"
+transformers = "^4.43.4"
+sentencepiece = "^0.2.0"
+sacremoses = "^0.1.1"
+services-api = {path = "../../common_packages/services_api", develop = true}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
