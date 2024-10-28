@@ -1,6 +1,4 @@
 from pydantic.v1 import BaseModel
-from langserve import RemoteRunnable
-from langchain.output_parsers import PydanticOutputParser
 from typing import Optional, List
 
 
@@ -10,12 +8,12 @@ class Roi(BaseModel):
     width: int
     height: int
 
+
 class Mask(BaseModel):
     width: int
     height: int
     roi: Roi
     mask_in_roi: List[int]
-
 
 
 class Box(BaseModel):
@@ -25,11 +23,18 @@ class Box(BaseModel):
     y_max: int
 
 
+class Pose(BaseModel):
+    rvec: List[List[float]]  # Вектор поворота
+    tvec: List[List[float]]  # Вектор трансляции
+
+
 class SegmentorResponse(BaseModel):
     num: int
     scores: List[float]
     classes_ids: List[int]
-    tracking_ids: Optional[List[int]] = None 
+    tracking_ids: Optional[List[int]] = None
     boxes: List[Box]
-    # masks: List[Mask]
-    analysis: dict
+    poses: Optional[List[Pose]] = None  # Позиции объектов с ориентацией и трансляцией
+    box_on_box: bool  
+    man_in_frame: bool 
+    
