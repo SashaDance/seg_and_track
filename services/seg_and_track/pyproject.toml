@@ -11,7 +11,8 @@ python = "^3.10"
 sse-starlette = "^2.1.3"
 fastapi = {extras = ["standard"], version = "^0.112.0"}
 pytest = {extras = ["asyncio"], version = "^8.3.3"}
-opencv-python = "^4.10.0"
+opencv-python = "^4.5.5"
+opencv-contrib-python = "^4.5.5.64"
 ultralytics = "^8.2.92"
 services-api = {path = "../../common_packages/services_api", develop = true}
 uvicorn = "^0.31.0"

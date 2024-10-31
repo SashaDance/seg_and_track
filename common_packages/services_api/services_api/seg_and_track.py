@@ -37,4 +37,6 @@ class SegmentorResponse(BaseModel):
     poses: Optional[List[Pose]] = None  # Позиции объектов с ориентацией и трансляцией
     box_on_box: bool  
     man_in_frame: bool 
-    
+    box_container_on_floor: bool
+    box_or_container_in_frame: bool
+    right_size_flags: bool
