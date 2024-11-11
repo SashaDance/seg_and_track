@@ -27,18 +27,26 @@ class Pose(BaseModel):
     rvec: List[List[float]]  # Вектор поворота
     tvec: List[List[float]]  # Вектор трансляции
 
-class BoxOutput(BaseModel): 
+class BoxOutput(BaseModel):
     box_id: int
-    class_id: int
-    box: List[int]
-    pose: Optional[List[Pose]] = None 
-    shelf_id: int
+    placed_on_shelf_with_id: int
 
-class ShelfOutput(BaseModel):
+
+class Graph(BaseModel):
+    id_1: Optional[int] = 0
+    id_2: Optional[int] = 0
+    rel_id: Optional[int] = 0
+    class_name_1: Optional[str] = None
+    rel_name: Optional[str] = None
+    class_name_2: Optional[str] = None
+
+
+class Shelf(BaseModel):
     shelf_id: int
     x: float
     y: float
-    pose: Optional[List[Pose]] = None 
+    occupied_by_box_with_id: Optional[int] = -1
+    pose: Pose
 
 
 class SegmentorResponse(BaseModel):
@@ -53,8 +61,9 @@ class SegmentorResponse(BaseModel):
     box_container_on_floor: bool
     box_or_container_in_frame: bool
     right_size_flags: bool
-    boxes_output: List[BoxOutput]
-    shelves: List[ShelfOutput]
+    boxes_output: Optional[List[BoxOutput]]
+    shelves: List[Shelf]
+    graph_evr: Optional[Graph] = None
 
 
 

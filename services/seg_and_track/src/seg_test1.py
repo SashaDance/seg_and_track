@@ -4,8 +4,11 @@ import json
 import numpy as np
 import torch
 from ultralytics import YOLO
+from huggingface_hub import hf_hub_download
 import cv2.aruco as aruco
-import cv2
+from typing import List
+
+
 print(cv2.__version__)
 
 
@@ -13,7 +16,7 @@ print(cv2.__version__)
 from masks import get_masks_in_rois, get_masks_rois, scale_image, reconstruct_masks
 from visualization import draw_objects
 from conversions import to_mask_msg
-from seg_and_track import SegmentorResponse, Box, Pose
+from seg_and_track import SegmentorResponse, Box, Pose, Graph
 #from DoF_pose_estim_aruco import my_estimatePoseSingleMarkers, draw_pose_axis
 # Classes
 #names:
@@ -26,7 +29,9 @@ from seg_and_track import SegmentorResponse, Box, Pose
 class Segmentor:
     def __init__(self):
         # Загружаем модель - переделать на hugginface
-        self.model = YOLO("/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/weights/best_fisheye.pt")
+        #self.model = YOLO("/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/weights/best_fisheye.pt")
+        model_path = hf_hub_download(repo_id="AnzhelikaK/yolov11_s_mini", filename="best.pt")
+        self.model = YOLO(model_path)
         #print("Model loaded")
         if torch.cuda.is_available():
             self.model.to('cuda')
@@ -297,9 +302,9 @@ class Segmentor:
 
                 boxes_output.append({"box_id": box_id, "placed_on_shelf_with_id": placed_on_shelf})
 
-        print(f"boxes_output {boxes_output}")
+        #print(f"boxes_output {boxes_output}")
 
-        print(f"shelves {shelves}")
+        #print(f"shelves {shelves}")
 
 
 
@@ -317,11 +322,13 @@ class Segmentor:
             if marker_id in self.aruco_size_reference:
                 ref_width, ref_height = self.aruco_size_reference[marker_id]
                 # Допустимый диапазон для размера: отклонение в 10%
-                tolerance = 0.1
+                tolerance = 0.3
                 is_correct_size = (
                     (1 - tolerance) * ref_width <= detected_width <= (1 + tolerance) * ref_width and
                     (1 - tolerance) * ref_height <= detected_height <= (1 + tolerance) * ref_height
                 )
+
+                print(detected_width, ref_width, ref_height, detected_height)
                 if not is_correct_size:
                     # Если хотя бы одно значение неверно, сразу возвращаем False
                     right_size_flags = False
@@ -329,33 +336,44 @@ class Segmentor:
                 # Если id маркера нет в эталонных размерах, возвращаем False
                 right_size_flags = False
 
-# ______ BOX_ON__BOX
-        box_on_box = False  
+        relationships: List[Graph] = []
+
+        # ______ BOX_ON__BOX
+        box_on_box = False
+        message = None
 
         for i, current_box in enumerate(filtered_boxes):
-            if filtered_class_ids[i] == 0: 
+            if filtered_class_ids[i] == 0:  # проверка на коробку
                 x_min, y_min, x_max, y_max = current_box
-                top_region_y_max = y_min - 10  # Define the top area of the box
+                top_region_y_max = y_min - 10  # Определение верхней области коробки
 
                 for j, other_box in enumerate(filtered_boxes):
-                    if i != j and filtered_class_ids[j] == 0:  
+                    if i != j and filtered_class_ids[j] == 0:  # Проверка на вторую коробку
                         other_x_min, other_y_min, other_x_max, other_y_max = other_box
 
+                        # Проверка нахождения одной коробки на другой
                         if other_x_min < x_max and other_x_max > x_min and other_y_max > top_region_y_max and other_y_min < y_min:
                             box_on_box = True
-                            message = {
-                                "id_1": filtered_marker_ids[i],  # Aruco ID for the first box
-                                "id_2": filtered_marker_ids[j],  # Aruco ID for the second box
-                                "rel_id": 2,
-                                "class_name_1": "box",
-                                "rel_name": "on_top",
-                                "class_name_2": "box",
-                            }
-                            break  # Exit the inner loop once a relationship is found
+
+                            # Создаем объект Graph для связи и добавляем его в список
+                            message = Graph(
+                                id_1=filtered_marker_ids[i],  # ID первой коробки
+                                id_2=filtered_marker_ids[j],  # ID второй коробки
+                                rel_id=2,
+                                class_name_1="box",
+                                rel_name="on_top",
+                                class_name_2="box",
+                            )
+                            relationships.append(message)
+
+                            # Переход к следующей коробке, если связь найдена
+                            break  
                 if box_on_box:
-                    break # Exit the outer loop as well
-        
-        print(message)
+                    break  
+        #print(message)
+           
+
+
 
       
         num = len(conf)
@@ -397,6 +415,8 @@ class Segmentor:
             for pose in filtered_marker_poses
         ]
 
+        
+
         # Формируем response с новыми флагами
         response = SegmentorResponse(
             num=len(filtered_conf),
@@ -411,14 +431,15 @@ class Segmentor:
             box_or_container_in_frame=box_or_container_in_frame,
             right_size_flags = right_size_flags,
             boxes_output = boxes_output,
-            shelves = shelves
+            shelves = shelves,
+            graph_evr = message 
         )
 
 
 
 
 
-        #print(response)
+        print(response)
         json_output_path = os.path.join("/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data", f"segmentation_result_{self.request_counter}.json")
         with open(json_output_path, 'w') as json_file:
             json.dump(response.dict(), json_file, ensure_ascii=False, indent=4)
@@ -443,7 +464,7 @@ def undistort_image(image, camera_matrix, distortion_coefficients):
 
 if __name__ == "__main__":
     segmentor = Segmentor()
-    image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/test.png"
+    image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/wp2.png"
     #image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/1727257199413594933.png"
     response = segmentor.segment_image(image_path)
     #print(response)

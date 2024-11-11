@@ -19,6 +19,7 @@ def get_masks_rois(masks):
     rois = list()
     for rs, cs in zip(rows, cols):
         y_min, y_max = np.where(rs)[0][[0, -1]]
+        
         x_min, x_max = np.where(cs)[0][[0, -1]]
         roi = (slice(y_min, y_max + 1), slice(x_min, x_max + 1))
         rois.append(roi)
