@@ -1,7 +1,7 @@
 import os
+import numpy as np
 import cv2
 import json
-import numpy as np
 import torch
 from ultralytics import YOLO
 from huggingface_hub import hf_hub_download
@@ -9,7 +9,7 @@ import cv2.aruco as aruco
 from typing import List
 
 
-print(cv2.__version__)
+
 
 
 #print(dir(aruco))
@@ -148,7 +148,7 @@ class Segmentor:
 
                     # Draw 6DoF pose axes on the image
                     #img_with_pose = cv2.aruco.drawAxis(img_undistorted, self.camera_matrix, self.dist_coeffs, rvecs[0], tvecs[0], 0.08)
-                    img_with_pose = cv2.aruco.drawAxis(img, self.camera_matrix, self.dist_coeffs, rvecs[0], tvecs[0], 0.08)
+                    img_with_pose = cv2.drawFrameAxes(img, self.camera_matrix, self.dist_coeffs, rvecs[0], tvecs[0], 0.08)
                                             
             else:
                 marker_ids.append(count_num)
@@ -187,7 +187,6 @@ class Segmentor:
         filtered_boxes = [boxes[i] for i in filtered_indices]
         filtered_conf = [conf[i] for i in filtered_indices]
         filtered_class_ids = [class_ids[i] for i in filtered_indices]
-
 
 
         # Данные для полок
@@ -328,7 +327,11 @@ class Segmentor:
                     (1 - tolerance) * ref_height <= detected_height <= (1 + tolerance) * ref_height
                 )
 
-                print(detected_width, ref_width, ref_height, detected_height)
+                print(
+                    f'detected w: {detected_width}, actual: {ref_width}, x_max - x_min: {x_max - x_min}',
+                    f'detected h: {detected_height}, actual: {ref_height}, y_max - y_min: {y_max - y_min}',
+                    sep='\n'
+                )
                 if not is_correct_size:
                     # Если хотя бы одно значение неверно, сразу возвращаем False
                     right_size_flags = False
@@ -384,7 +387,7 @@ class Segmentor:
                         roi in zip(masks_in_rois, rois)]
 
         masks_in_rois = reconstruct_masks(mask_messages)
-        output_dir = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/output"
+        output_dir = "D:/pythonProject/seg_and_track/R-D-AC_robotic_integration-feat-seg_and_track/services/seg_and_track/tests/data/output"
 
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -440,7 +443,10 @@ class Segmentor:
 
 
         print(response)
-        json_output_path = os.path.join("/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data", f"segmentation_result_{self.request_counter}.json")
+        json_output_path = os.path.join(
+            "D:/pythonProject/seg_and_track/R-D-AC_robotic_integration-feat-seg_and_track/services/seg_and_track/tests/data/output",
+            f"segmentation_result_{self.request_counter}.json"
+        )
         with open(json_output_path, 'w') as json_file:
             json.dump(response.dict(), json_file, ensure_ascii=False, indent=4)
 
@@ -464,8 +470,9 @@ def undistort_image(image, camera_matrix, distortion_coefficients):
 
 if __name__ == "__main__":
     segmentor = Segmentor()
-    image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/wp2.png"
+    # image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/wp2.png"
     #image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/1727257199413594933.png"
+    image_path = 'D:/pythonProject/seg_and_track/R-D-AC_robotic_integration-feat-seg_and_track/services/seg_and_track/tests/data/images/wp2.png'
     response = segmentor.segment_image(image_path)
-    #print(response)
+    # print(response)
     
