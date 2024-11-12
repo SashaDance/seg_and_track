@@ -101,6 +101,7 @@ class Segmentor:
 
         marker_ids = []
         marker_poses = []
+        marker_corners = []
         count_num = 0
         marker_length = 0.08 # Length of the Aruco marker side
         
@@ -133,14 +134,13 @@ class Segmentor:
                     marker_ids.append(ids[0][0])
                     corners_with_offset = [corner + [x, y] for corner in corners]
 
-
                     # Рассчет 6DoF позы
                     rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(corners_with_offset, marker_length, self.camera_matrix, self.dist_coeffs)
 
                     
                     pose_6dof = {'rvec': rvecs[0].tolist(), 'tvec': tvecs[0].tolist()}
                     marker_poses.append(pose_6dof)
-
+                    marker_corners.append(corners_with_offset[0][0])
                     # Draw the Aruco marker corners
                     cv2.polylines(img, [pts + [x, y]], isClosed=True, color=(0, 255, 255), thickness=3)
                     cv2.putText(img, f"Aruco_id: {ids[0][0]}", (x + pts[0][0], y + pts[0][1] - 10),
@@ -154,6 +154,12 @@ class Segmentor:
                 marker_ids.append(count_num)
                 pose_6dof = {'rvec': [[0, 0, 0]], 'tvec': [[0, 0, 0]]}  
                 marker_poses.append(pose_6dof)
+                marker_corners.append([[
+                    [0, 0],
+                    [0, 0],
+                    [0, 0],
+                    [0, 0]
+                ]])
                 count_num += 1
                 #print(count_num)
 
@@ -184,6 +190,7 @@ class Segmentor:
         # Отфильтрованные данные для коробок и контейнеров
         filtered_marker_ids = [marker_ids[i] for i in filtered_indices]
         filtered_marker_poses = [marker_poses[i] for i in filtered_indices]
+        filtered_marker_corners = [marker_corners[i] for i in filtered_indices]
         filtered_boxes = [boxes[i] for i in filtered_indices]
         filtered_conf = [conf[i] for i in filtered_indices]
         filtered_class_ids = [class_ids[i] for i in filtered_indices]
@@ -310,15 +317,17 @@ class Segmentor:
         # Проверка размеров для каждого бокса
              
         right_size_flags = True
-        for marker_id, box in zip(filtered_marker_ids, filtered_boxes):
+        for marker_id, box, pose, corner in zip(filtered_marker_ids, filtered_boxes, filtered_marker_poses, filtered_marker_corners):
             x_min, y_min, x_max, y_max = box
-            
-            # Вычисляем ширину и высоту бокса в метрах на выпрямленном изображении
-            detected_width = (x_max - x_min) / new_camera_matrix[0, 0]
-            detected_height = (y_max - y_min) / new_camera_matrix[1, 1]
-
             # Проверяем, если id маркера есть в эталонных размерах
             if marker_id in self.aruco_size_reference:
+                # Вычисляем ширину и высоту бокса в метрах на выпрямленном изображении
+                # detected_width = z * (x_max - x_min) / new_camera_matrix[0, 0]
+                # detected_height = z * (y_max - y_min) / new_camera_matrix[1, 1]
+                k_x = 0.08 / abs(corner[0][0] - corner[1][0])
+                k_y = 0.08 / abs(corner[0][1] - corner[2][1])
+                detected_width = (x_max - x_min) * k_x
+                detected_height = (y_max - y_min) * k_y
                 ref_width, ref_height = self.aruco_size_reference[marker_id]
                 # Допустимый диапазон для размера: отклонение в 10%
                 tolerance = 0.3
@@ -328,6 +337,7 @@ class Segmentor:
                 )
 
                 print(
+                    f'aruco id: {marker_id}',
                     f'detected w: {detected_width}, actual: {ref_width}, x_max - x_min: {x_max - x_min}',
                     f'detected h: {detected_height}, actual: {ref_height}, y_max - y_min: {y_max - y_min}',
                     sep='\n'
@@ -472,7 +482,7 @@ if __name__ == "__main__":
     segmentor = Segmentor()
     # image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/wp2.png"
     #image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/1727257199413594933.png"
-    image_path = 'D:/pythonProject/seg_and_track/R-D-AC_robotic_integration-feat-seg_and_track/services/seg_and_track/tests/data/images/wp2.png'
+    image_path = 'D:/pythonProject/seg_and_track/R-D-AC_robotic_integration-feat-seg_and_track/services/seg_and_track/tests/data/images/wp1.png'
     response = segmentor.segment_image(image_path)
     # print(response)
     
