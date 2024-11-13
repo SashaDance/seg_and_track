@@ -154,12 +154,7 @@ class Segmentor:
                 marker_ids.append(count_num)
                 pose_6dof = {'rvec': [[0, 0, 0]], 'tvec': [[0, 0, 0]]}  
                 marker_poses.append(pose_6dof)
-                marker_corners.append([[
-                    [0, 0],
-                    [0, 0],
-                    [0, 0],
-                    [0, 0]
-                ]])
+                marker_corners.append(None)
                 count_num += 1
                 #print(count_num)
 
@@ -180,9 +175,6 @@ class Segmentor:
                         np.delete(masks_in_rois, i, axis=0)
                         np.delete(rois, i, axis=0)
 
-      
-
-        
         # Оставляем только классы 0 и 1, а также добавляем полки для проверки
         filtered_indices = [i for i, class_id in enumerate(class_ids) if class_id in [0, 1]]
         shelves_indices = [i for i, class_id in enumerate(class_ids) if class_id == 3]
@@ -230,89 +222,76 @@ class Segmentor:
 
  # --- BOX AND SHELF ASSOCIATION ---
 
-        corners_shelf, ids_shelf, _ = aruco.detectMarkers(img, self.aruco_dict, parameters=self.aruco_params)
-        #print(ids_shelf)
+        corners_shelf, ids_shelf, _ = aruco.detectMarkers(
+            img, self.aruco_dict, parameters=self.aruco_params
+        )
         marker_poses_shelf = []
-        shelves = []  
-
-    
+        shelves = []
         if ids_shelf is not None:
-            rvecs_shelf, tvecs_shelf, _ = cv2.aruco.estimatePoseSingleMarkers(corners_shelf, marker_length, self.camera_matrix, self.dist_coeffs)
+            rvecs_shelf, tvecs_shelf, _ = cv2.aruco.estimatePoseSingleMarkers(
+                corners_shelf, marker_length, self.camera_matrix,
+                self.dist_coeffs
+            )
 
             for i in range(len(ids_shelf)):
                 marker_id = ids_shelf[i][0]
-                shelf_id = marker_id - 10 if 10 <= marker_id <= 17 else -1 #check aruco id
-                #print(shelf_id)
+                shelf_id = marker_id - 10 if 10 <= marker_id <= 17 else -1  # check aruco id
+                # print(shelf_id)
 
                 if shelf_id != -1:
+                    pts_shelves = corners_shelf[i][0].astype(
+                        np.int32)  # Используем corners_shelf[i]
+                    cv2.polylines(img, [pts_shelves], isClosed=True,
+                                  color=(0, 255, 255), thickness=3)
+                    cv2.putText(img, f"Aruco_id: {marker_id}",
+                                (pts_shelves[0][0], pts_shelves[0][1] - 10),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255),
+                                2)
 
-                    pts_shelves = corners_shelf[i][0].astype(np.int32)  # Используем corners_shelf[i]
-                    cv2.polylines(img, [pts_shelves], isClosed=True, color=(0, 255, 255), thickness=3)
-                    cv2.putText(img, f"Aruco_id: {marker_id}", (pts_shelves[0][0], pts_shelves[0][1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
-
-                    pose_6dof_shelf = {'rvec': rvecs_shelf[i].tolist(), 'tvec': tvecs_shelf[i].tolist()}
+                    pose_6dof_shelf = {'rvec': rvecs_shelf[i].tolist(),
+                                       'tvec': tvecs_shelf[i].tolist()}
                     marker_x, marker_y = tvecs_shelf[i][0][:2]
-                    shelves.append({"shelf_id": shelf_id, "x": marker_x, "y": marker_y, "pose": pose_6dof_shelf, "occupied_by_box_with_id": -1})
-
-                    # Получение координат маркера в пикселях
-                    rvec, tvec = rvecs_shelf[i], tvecs_shelf[i]
-                    imgpts, _ = cv2.projectPoints(np.array([[0.0, 0.0, 0.0]]), rvec, tvec, self.camera_matrix, self.dist_coeffs)
-                    marker_x, marker_y = imgpts[0][0]
-
-
-                    pose_6dof_shelf = {'rvec': rvecs_shelf[i].tolist(), 'tvec': tvecs_shelf[i].tolist()}
-                    shelves.append({"shelf_id": shelf_id, "x": marker_x, "y": marker_y, "pose": pose_6dof_shelf, "occupied_by_box_with_id": -1})
-
+                    shelves.append(
+                        {"shelf_id": shelf_id, "x": marker_x, "y": marker_y,
+                         "pose": pose_6dof_shelf,
+                         "occupied_by_box_with_id": -1})
 
         boxes_output = []
-        aruco_to_shelf = {10 + i: i + 1 for i in range(6)}
-
-        # Process Aruco markers and create shelf data
-        for marker_id, marker_pose in zip(marker_ids, marker_poses):
-            shelf_id = aruco_to_shelf.get(marker_id, -1)
-            if shelf_id != -1:
-                marker_x, marker_y = marker_pose['tvec'][0][:2]
-                shelves.append({"shelf_id": shelf_id, "x": marker_x, "y": marker_y, "occupied_by_box_with_id": -1})  # Store marker position
-
-
-        # Process boxes and associate them with shelves based on Aruco marker proximity
-        for i, (box_id, class_id, box) in enumerate(zip(filtered_marker_ids, filtered_class_ids, filtered_boxes)):
-            if class_id in [0, 1]:  # Box or container
-                box_x_min, box_y_min, box_x_max, box_y_max = box
-                box_center_x = (box_x_min + box_x_max) / 2
-                placed_on_shelf = -1
-
-                for j, shelf_data in enumerate(shelves):
-                    shelf_id = shelf_data['shelf_id']
-                    marker_x = shelf_data['x']
-                    marker_y = shelf_data['y']
-                    vertical_range = 200  # Adjust as needed
-                    horizontal_range = 100 # Adjust as needed
-
-                    # Calculate search area coordinates
-                    search_x_min = int(marker_x - horizontal_range)
-                    search_x_max = int(marker_x + horizontal_range)
-                    search_y_min = int(marker_y - vertical_range)  # Start above the marker
-                    search_y_max = int(marker_y) # End at the marker
-
-
-                    # Draw the search area
-                    cv2.rectangle(img, (search_x_min, search_y_min), (search_x_max, search_y_max), (0, 255, 0), 2)
-
-
-                    if (abs(box_center_x - marker_x) < horizontal_range and  # Horizontal proximity check
-                            marker_y - vertical_range <= box_y_max <= marker_y): # Vertical proximity (above the marker)
-                        placed_on_shelf = shelf_id
-                        shelves[j]["occupied_by_box_with_id"] = box_id
-                        break
-
-                boxes_output.append({"box_id": box_id, "placed_on_shelf_with_id": placed_on_shelf})
-
-        #print(f"boxes_output {boxes_output}")
-
-        #print(f"shelves {shelves}")
-
-
+        for cur_ind, box_corner in enumerate(filtered_marker_corners):
+            if box_corner is None:
+                boxes_output.append({
+                    'box_id': 0,
+                    'placed_on_shelf_with_id': -1
+                })
+                continue
+            top_left_box, bottom_right_box = box_corner[0], box_corner[2]
+            box_center = (
+                int((top_left_box[1] + bottom_right_box[1]) / 2),
+                int((top_left_box[0] + bottom_right_box[0]) / 2)
+            )
+            min_ind = -1
+            min_distance = 1e12
+            for ind, shelf_corner in enumerate(corners_shelf):
+                top_left_shelf, bottom_right_shelf = (
+                    shelf_corner[0][0],
+                    shelf_corner[0][2]
+                )
+                shelf_center = (
+                    int((top_left_shelf[1] + bottom_right_shelf[1]) / 2),
+                    int((top_left_shelf[0] + bottom_right_shelf[0]) / 2)
+                )
+                distance = (
+                        (box_center[0] - shelf_center[0]) ** 2
+                        + (box_center[1] - shelf_center[1]) ** 2
+                )
+                if distance < min_distance:
+                    min_distance = distance
+                    min_ind = ind
+            boxes_output.append({
+                'box_id': filtered_marker_ids[cur_ind],
+                'placed_on_shelf_with_id': ids_shelf[min_ind] - 10
+            })
+            shelves[min_ind]['occupied_by_box_with_id'] = filtered_marker_ids[cur_ind]
 
         # Проверка размеров для каждого бокса
              
@@ -336,12 +315,12 @@ class Segmentor:
                     (1 - tolerance) * ref_height <= detected_height <= (1 + tolerance) * ref_height
                 )
 
-                print(
-                    f'aruco id: {marker_id}',
-                    f'detected w: {detected_width}, actual: {ref_width}, x_max - x_min: {x_max - x_min}',
-                    f'detected h: {detected_height}, actual: {ref_height}, y_max - y_min: {y_max - y_min}',
-                    sep='\n'
-                )
+                # print(
+                #     f'aruco id: {marker_id}',
+                #     f'detected w: {detected_width}, actual: {ref_width}, x_max - x_min: {x_max - x_min}',
+                #     f'detected h: {detected_height}, actual: {ref_height}, y_max - y_min: {y_max - y_min}',
+                #     sep='\n'
+                # )
                 if not is_correct_size:
                     # Если хотя бы одно значение неверно, сразу возвращаем False
                     right_size_flags = False
@@ -384,11 +363,7 @@ class Segmentor:
                 if box_on_box:
                     break  
         #print(message)
-           
 
-
-
-      
         num = len(conf)
         if len(marker_ids) > num:
             marker_ids = marker_ids[:num]
@@ -448,11 +423,6 @@ class Segmentor:
             graph_evr = message 
         )
 
-
-
-
-
-        print(response)
         json_output_path = os.path.join(
             "D:/pythonProject/seg_and_track/R-D-AC_robotic_integration-feat-seg_and_track/services/seg_and_track/tests/data/output",
             f"segmentation_result_{self.request_counter}.json"
@@ -475,14 +445,9 @@ def undistort_image(image, camera_matrix, distortion_coefficients):
     return undistorted_image, new_camera_matrix
 
 
-
-
-
 if __name__ == "__main__":
     segmentor = Segmentor()
-    # image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/wp2.png"
-    #image_path = "/home/angelika/Desktop/7_term/feat-seg_and_track/services/seg_and_track/tests/data/images/1727257199413594933.png"
-    image_path = 'D:/pythonProject/seg_and_track/R-D-AC_robotic_integration-feat-seg_and_track/services/seg_and_track/tests/data/images/wp1.png'
+    image_path = 'D:/pythonProject/seg_and_track/R-D-AC_robotic_integration-feat-seg_and_track/services/seg_and_track/tests/data/images/wp3.png'
     response = segmentor.segment_image(image_path)
-    # print(response)
-    
+    print(response.boxes_output)
+    print(response.shelves)
