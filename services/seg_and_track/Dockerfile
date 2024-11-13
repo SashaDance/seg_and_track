@@ -1,8 +1,5 @@
-# syntax=docker/dockerfile:1
-
-#FROM pytorch/pytorch:latest
-#2.1.0-cuda11.8-cudnn8-runtime
 FROM pytorch/pytorch:2.4.1-cuda11.8-cudnn9-runtime
+FROM python:3.10.0
 
 RUN apt-get update && \
     apt-get install -y curl libgl1-mesa-glx libglib2.0-0 libsm6 libxrender1 libxext6 && \

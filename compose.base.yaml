@@ -1,6 +1,8 @@
 services:
 
   seg_and_track:
+    ports:
+      - 8000:8000
     build:
       context: .
       dockerfile: services/seg_and_track/Dockerfile
