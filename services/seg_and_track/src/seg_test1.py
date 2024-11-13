@@ -138,8 +138,6 @@ class Segmentor:
             w_roi = int(roi[1].stop - roi[1].start)
             h_roi = int(roi[0].stop - roi[0].start)
 
-            
-     
             #roi_image = img_undistorted[y:y + h_roi, x:x + w_roi]
             roi_image = img[y:y + h_roi, x:x + w_roi]
 
@@ -213,7 +211,7 @@ class Segmentor:
         shelf_boxes = [boxes[i] for i in shelves_indices]
 
         # Проверка, находится ли коробка/контейнер на полу
-        box_on_floor = False
+        filtered_flags = []
 
         for i, current_box in enumerate(filtered_boxes):
             if filtered_class_ids[i] in [0, 1]:  # Проверяем только для коробок и контейнеров
@@ -225,20 +223,20 @@ class Segmentor:
                     shelf_x_min, shelf_y_min, shelf_x_max, shelf_y_max = shelf_box
 
                     # Проверка на наличие полки под коробкой/контейнером по критерию y
-                    if shelf_y_max < y_min:  # только по y
+                    if shelf_y_min < y_max:  # только по y
                         on_shelf = True
                         break
 
                 # Устанавливаем флаг на пол, если нет полки под текущей коробкой
                 if not on_shelf:
-                    #print("Параметры текущей коробки:", current_box)
-                    #print("Параметры проверяемой полки:", shelf_box)
-                    box_on_floor = True
-                    break  # Достаточно одного флага для всей сцены
-        
-
-        undistorted_image, new_camera_matrix = undistort_image(img, self.camera_matrix, self.dist_fish)
-    
+                    # print("Параметры текущей коробки:", current_box)
+                    # print("Параметры проверяемой полки:", shelf_box)
+                    filtered_flags.append(True)
+                else:
+                    filtered_flags.append(False)
+        undistorted_image, new_camera_matrix = undistort_image(img,
+                                                               self.camera_matrix,
+                                                               self.dist_fish)
 
 
  # --- BOX AND SHELF ASSOCIATION ---
@@ -279,7 +277,7 @@ class Segmentor:
 
         boxes_output = []
         for cur_ind, box_corner in enumerate(filtered_marker_corners):
-            if box_corner is None:
+            if box_corner is None or filtered_flags[cur_ind]:
                 boxes_output.append({
                     'box_id': 0,
                     'placed_on_shelf_with_id': -1
@@ -323,20 +321,23 @@ class Segmentor:
                 top_center = ((x_max + x_min) / 2, y_max)
                 bottom_center = ((x_max + x_min) / 2, y_min)
                 top_left_aruco, bottom_right_aruco = corner[0], corner[2]
+                bottom_left_aruco = corner[3]
                 center_aruco = (
-                    int((top_left_aruco[1] + bottom_right_aruco[1]) / 2),
-                    int((top_left_aruco[0] + bottom_right_aruco[0]) / 2)
+                    int((top_left_aruco[0] + bottom_right_aruco[0]) / 2),
+                    int((top_left_aruco[1] + bottom_right_aruco[1]) / 2)
+                )
+                left_center_aruco = (
+                    top_left_aruco[0],
+                    int((top_left_aruco[1] + bottom_left_aruco[1]) / 2)
                 )
                 # width
                 distance_left = math.dist(center_aruco, left_center)
                 distance_right = math.dist(center_aruco, right_center)
-                print(left_center, right_center)
                 if distance_right < distance_left:
                     dist = self.pixel_dist_to_real(
                         right_center, center_aruco, z
                     )
                     detected_width = 2 * dist
-                    print(dist)
                 else:
                     dist = self.pixel_dist_to_real(
                         left_center, center_aruco, z
@@ -363,12 +364,12 @@ class Segmentor:
                     (1 - tolerance) * ref_width <= detected_width <= (1 + tolerance) * ref_width and
                     (1 - tolerance) * ref_height <= detected_height <= (1 + tolerance) * ref_height
                 )
-                print(
-                    f'aruco id: {marker_id}',
-                    f'detected w: {detected_width}, actual: {ref_width}, x_max - x_min: {x_max - x_min}',
-                    f'detected h: {detected_height}, actual: {ref_height}, y_max - y_min: {y_max - y_min}',
-                    sep='\n'
-                )
+                # print(
+                #     f'aruco id: {marker_id}',
+                #     f'detected w: {detected_width}, actual: {ref_width}',
+                #     f'detected h: {detected_height}, actual: {ref_height}',
+                #     sep='\n'
+                # )
                 if not is_correct_size:
                     # Если хотя бы одно значение неверно, сразу возвращаем False
                     right_size_flags = False
@@ -463,7 +464,7 @@ class Segmentor:
             poses=poses_response,
             box_on_box=box_on_box,
             man_in_frame=man_in_frame,
-            box_container_on_floor=box_on_floor,
+            box_container_on_floor=any(filtered_flags),
             box_or_container_in_frame=box_or_container_in_frame,
             right_size_flags = right_size_flags,
             boxes_output = boxes_output,
@@ -497,5 +498,4 @@ if __name__ == "__main__":
     segmentor = Segmentor()
     image_path = 'D:/pythonProject/seg_and_track/R-D-AC_robotic_integration-feat-seg_and_track/services/seg_and_track/tests/data/images/wp3.png'
     response = segmentor.segment_image(image_path)
-    print(response.boxes_output)
-    print(response.shelves)
+
