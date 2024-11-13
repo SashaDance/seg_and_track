@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import json
 import torch
+import math
 from ultralytics import YOLO
 from huggingface_hub import hf_hub_download
 import cv2.aruco as aruco
@@ -65,9 +66,33 @@ class Segmentor:
         # self.Knew = self.camera_matrix.copy()
         # self.Knew[(0,1), (0,1)] = 0.4 * self.Knew[(0,1), (0,1)]
 
+    def pixel_dist_to_real(
+            self,
+            point_1: tuple[float, float],
+            point_2: tuple[float, float],
+            z: float) -> float:
+        real_x_1 = (
+            z * (point_1[0] - self.camera_matrix[0][2])
+            / self.camera_matrix[0, 0]
+        )
+        real_x_2 = (
+            z * (point_2[0] - self.camera_matrix[0][2])
+            / self.camera_matrix[0, 0]
+        )
+        real_y_1 = (
+            z * (point_1[1] - self.camera_matrix[1][2])
+            / self.camera_matrix[1, 1]
+        )
+        real_y_2 = (
+            z * (point_2[1] - self.camera_matrix[1][2])
+            / self.camera_matrix[1, 1]
+        )
+        distance = math.dist(
+            (real_x_1, real_y_1),
+            (real_x_2, real_y_2)
+        )
 
-
-
+        return distance
 
     def segment_image(self, image_path):
         self.request_counter += 1
@@ -82,8 +107,6 @@ class Segmentor:
         class_ids = results.boxes.cls.cpu().numpy().astype(np.uint8).tolist()
         boxes = results.boxes.xyxy.cpu().numpy().astype(np.uint32).tolist()
         masks = results.masks if results.masks is not None else None
-
-
 
         if masks is None:
             masks = np.array([])
@@ -122,7 +145,6 @@ class Segmentor:
 
             # Detect Aruco markers
             corners, ids, _ = aruco.detectMarkers(roi_image, self.aruco_dict)
-            
 
             if ids is not None:
                 aruco_mask = np.zeros(roi_image.shape[:2], dtype=np.uint8)
@@ -180,13 +202,12 @@ class Segmentor:
         shelves_indices = [i for i, class_id in enumerate(class_ids) if class_id == 3]
 
         # Отфильтрованные данные для коробок и контейнеров
-        filtered_marker_ids = [marker_ids[i] for i in filtered_indices]
-        filtered_marker_poses = [marker_poses[i] for i in filtered_indices]
-        filtered_marker_corners = [marker_corners[i] for i in filtered_indices]
-        filtered_boxes = [boxes[i] for i in filtered_indices]
-        filtered_conf = [conf[i] for i in filtered_indices]
-        filtered_class_ids = [class_ids[i] for i in filtered_indices]
-
+        filtered_marker_ids = [marker_ids[i] for i in filtered_indices if i < len(marker_ids)]
+        filtered_marker_poses = [marker_poses[i] for i in filtered_indices if i < len(marker_poses)]
+        filtered_boxes = [boxes[i] for i in filtered_indices if i < len(boxes)]
+        filtered_conf = [conf[i] for i in filtered_indices if i < len(conf)]
+        filtered_marker_corners = [marker_corners[i] for i in filtered_indices if i < len(marker_corners)]
+        filtered_class_ids = [class_ids[i] for i in filtered_indices if i < len(class_ids)]
 
         # Данные для полок
         shelf_boxes = [boxes[i] for i in shelves_indices]
@@ -280,10 +301,7 @@ class Segmentor:
                     int((top_left_shelf[1] + bottom_right_shelf[1]) / 2),
                     int((top_left_shelf[0] + bottom_right_shelf[0]) / 2)
                 )
-                distance = (
-                        (box_center[0] - shelf_center[0]) ** 2
-                        + (box_center[1] - shelf_center[1]) ** 2
-                )
+                distance = math.dist(box_center, shelf_center)
                 if distance < min_distance:
                     min_distance = distance
                     min_ind = ind
@@ -294,19 +312,50 @@ class Segmentor:
             shelves[min_ind]['occupied_by_box_with_id'] = filtered_marker_ids[cur_ind]
 
         # Проверка размеров для каждого бокса
-             
         right_size_flags = True
         for marker_id, box, pose, corner in zip(filtered_marker_ids, filtered_boxes, filtered_marker_poses, filtered_marker_corners):
             x_min, y_min, x_max, y_max = box
             # Проверяем, если id маркера есть в эталонных размерах
             if marker_id in self.aruco_size_reference:
-                # Вычисляем ширину и высоту бокса в метрах на выпрямленном изображении
-                # detected_width = z * (x_max - x_min) / new_camera_matrix[0, 0]
-                # detected_height = z * (y_max - y_min) / new_camera_matrix[1, 1]
-                k_x = 0.08 / abs(corner[0][0] - corner[1][0])
-                k_y = 0.08 / abs(corner[0][1] - corner[2][1])
-                detected_width = (x_max - x_min) * k_x
-                detected_height = (y_max - y_min) * k_y
+                z = pose['tvec'][0][-1]
+                right_center = (x_max, (y_min + y_max) / 2)
+                left_center = (x_min, (y_min + y_max) / 2)
+                top_center = ((x_max + x_min) / 2, y_max)
+                bottom_center = ((x_max + x_min) / 2, y_min)
+                top_left_aruco, bottom_right_aruco = corner[0], corner[2]
+                center_aruco = (
+                    int((top_left_aruco[1] + bottom_right_aruco[1]) / 2),
+                    int((top_left_aruco[0] + bottom_right_aruco[0]) / 2)
+                )
+                # width
+                distance_left = math.dist(center_aruco, left_center)
+                distance_right = math.dist(center_aruco, right_center)
+                print(left_center, right_center)
+                if distance_right < distance_left:
+                    dist = self.pixel_dist_to_real(
+                        right_center, center_aruco, z
+                    )
+                    detected_width = 2 * dist
+                    print(dist)
+                else:
+                    dist = self.pixel_dist_to_real(
+                        left_center, center_aruco, z
+                    )
+                    detected_width = 2 * dist
+                # height
+                distance_top = math.dist(center_aruco, top_center)
+                distance_bottom = math.dist(center_aruco, bottom_center)
+                if distance_top < distance_bottom:
+                    dist = self.pixel_dist_to_real(
+                        top_center, center_aruco, z
+                    )
+                    detected_height = 2 * dist
+                else:
+                    dist = self.pixel_dist_to_real(
+                        bottom_center, center_aruco, z
+                    )
+                    detected_height = 2 * dist
+
                 ref_width, ref_height = self.aruco_size_reference[marker_id]
                 # Допустимый диапазон для размера: отклонение в 10%
                 tolerance = 0.3
@@ -314,13 +363,12 @@ class Segmentor:
                     (1 - tolerance) * ref_width <= detected_width <= (1 + tolerance) * ref_width and
                     (1 - tolerance) * ref_height <= detected_height <= (1 + tolerance) * ref_height
                 )
-
-                # print(
-                #     f'aruco id: {marker_id}',
-                #     f'detected w: {detected_width}, actual: {ref_width}, x_max - x_min: {x_max - x_min}',
-                #     f'detected h: {detected_height}, actual: {ref_height}, y_max - y_min: {y_max - y_min}',
-                #     sep='\n'
-                # )
+                print(
+                    f'aruco id: {marker_id}',
+                    f'detected w: {detected_width}, actual: {ref_width}, x_max - x_min: {x_max - x_min}',
+                    f'detected h: {detected_height}, actual: {ref_height}, y_max - y_min: {y_max - y_min}',
+                    sep='\n'
+                )
                 if not is_correct_size:
                     # Если хотя бы одно значение неверно, сразу возвращаем False
                     right_size_flags = False

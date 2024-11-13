@@ -7,6 +7,7 @@ def get_masks_rois(masks):
     if len(masks) == 0:
         return np.empty((0,), dtype=object)
 
+    # Если маски представлены в виде 2D массива, расширяем их до 3D
     if isinstance(masks, np.ndarray) and masks.ndim == 2:
         masks = np.expand_dims(masks, axis=0)
         extended = True
@@ -18,9 +19,16 @@ def get_masks_rois(masks):
 
     rois = list()
     for rs, cs in zip(rows, cols):
-        y_min, y_max = np.where(rs)[0][[0, -1]]
-        
-        x_min, x_max = np.where(cs)[0][[0, -1]]
+        if np.any(rs):  # Проверяем, что массив не пуст
+            y_min, y_max = np.where(rs)[0][[0, -1]]
+        else:
+            y_min, y_max = 0, 0  # Если массив пуст, устанавливаем минимальные значения
+
+        if np.any(cs):  # Проверяем, что массив не пуст
+            x_min, x_max = np.where(cs)[0][[0, -1]]
+        else:
+            x_min, x_max = 0, 0  # Если массив пуст, устанавливаем минимальные значения
+
         roi = (slice(y_min, y_max + 1), slice(x_min, x_max + 1))
         rois.append(roi)
 
@@ -29,6 +37,7 @@ def get_masks_rois(masks):
     else:
         rois = np.array(rois + [None], dtype=object)[:-1]
     return rois
+
 
 
 def get_masks_in_rois(masks, rois, copy=True):
